@@ -36,17 +36,20 @@ const SelectedWorks = () => {
       <motion.h2
         initial={{ x: -50, opacity: 0 }}
         whileInView={{ x: 0, opacity: 1 }}
-        style={{ ...comicTitleStyle, fontSize: "4rem", marginBottom: "3rem" }}
+        style={{ ...comicTitleStyle, fontSize: "3.5rem", marginBottom: "2.5rem" }}
       >
         Selected Works
       </motion.h2>
 
-      {/* Grid Layout: 3 Columns fixed for large screens, responsive for smaller */}
       <div style={{ 
           display: "grid", 
-          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", 
-          gap: "30px",
-          width: "100%"
+          gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", 
+          
+          // ✅ INCREASED GAP: 60px for maximum separation
+          gap: "60px", 
+          
+          width: "100%",
+          gridAutoRows: "1fr" 
       }}>
         {projects.map((project, index) => (
           <a 

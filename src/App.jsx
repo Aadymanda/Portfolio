@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { ScrollControls, Scroll, Sparkles, Float, Environment } from "@react-three/drei";
 
 // --- Imports ---
 import { colors } from "./utils/theme";
-import ParticleBurst from "./components/3d/ParticleBurst"; // Imported Component
+import ParticleBurst from "./components/3d/ParticleBurst"; 
 
 // Page Sections
 import Hero from "./sections/Hero";
@@ -24,6 +24,32 @@ const FontLoader = () => {
 };
 
 export default function App() {
+  // 1. State to manage the number of pages
+  const [pages, setPages] = useState(6); // Default
+
+  // 2. Responsive Logic
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      
+      // LOGIC: Mobile needs MORE pages because text wraps vertically
+      if (width < 600) {
+        setPages(8); // Mobile (Tallest)
+      } else if (width < 1024) {
+        setPages(7.5);   // Tablet
+      } else {
+        setPages(6);   // Desktop (Shortest)
+      }
+    };
+
+    // Run on mount
+    handleResize();
+
+    // Run on resize
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div style={{ width: "100vw", height: "100vh", background: colors.bg }}>
       <FontLoader />
@@ -35,10 +61,9 @@ export default function App() {
         <pointLight position={[10, 10, 10]} intensity={2} color={colors.secondary} />
         <pointLight position={[-10, -10, -10]} intensity={1} color={colors.primary} />
 
-        {/* pages={6} ensures the Contact section is reachable */}
-        <ScrollControls pages={6} damping={0.25}>
+        {/* 3. Pass the dynamic 'pages' state here */}
+        <ScrollControls pages={pages} damping={0.25}>
           
-          {/* HTML Overlay */}
           <Scroll html style={{ width: "100%" }}>
             <style>{`
               ::-webkit-scrollbar { display: none; }
@@ -51,11 +76,11 @@ export default function App() {
               <TechStack />
               <SelectedWorks />
               <Contact />
-              <div style={{ height: "10vh" }}></div>
+              {/* Extra buffer at the bottom just in case */}
+              <div style={{ height: "15vh" }}></div>
             </div>
           </Scroll>
 
-          {/* 3D Background Elements */}
           <Sparkles count={600} scale={[15, 15, 15]} size={3} speed={0.3} opacity={0.5} noise={0.1} color={colors.secondary} />
           <Sparkles count={300} scale={[10, 10, 10]} size={4} speed={0.5} opacity={0.4} color={colors.white} />
 
